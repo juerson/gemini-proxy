@@ -10,7 +10,10 @@
 
 
 export default {
-  async fetch(request) {
+  async fetch(request, env) {
+    // hack
+    await env.DB.exec('SELECT * FROM Example LIMIT 1');
+
     const url = new URL(request.url)
     let targetURL = new URL('https://generativelanguage.googleapis.com')
   
