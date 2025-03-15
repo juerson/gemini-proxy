@@ -12,5 +12,5 @@ mode = "smart"
 
 [[d1_databases]]
 binding = "DB"
-database_name = "geo-us-west"
-database_id = "d316d82d-80d6-426e-8a7f-e00e83b868dd"
+database_name = "geo-us-east"
+database_id = "fd1fe1b7-b556-4692-9f00-13f175e30d51"
