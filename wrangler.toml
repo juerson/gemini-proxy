@@ -1,0 +1,16 @@
+name = "gemini-proxy"
+compatibility_date = "2024-09-26"
+compatibility_flags = ["nodejs_compat"]
+main = "./worker.js"
+
+# Automatically place your workloads in an optimal location to minimize latency.
+# If you are running back-end logic in a Pages Function, running it closer to your back-end infrastructure
+# rather than the end user may result in better performance.
+# Docs: https://developers.cloudflare.com/pages/functions/smart-placement/#smart-placement
+[placement]
+mode = "smart"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "geo-us-west"
+database_id = "d316d82d-80d6-426e-8a7f-e00e83b868dd"
