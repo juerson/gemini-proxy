@@ -1,5 +1,5 @@
 name = "gemini-proxy"
-compatibility_date = "2024-09-26"
+compatibility_date = "2025-03-27"
 compatibility_flags = ["nodejs_compat"]
 main = "./worker.js"
 
@@ -10,7 +10,6 @@ main = "./worker.js"
 [placement]
 mode = "smart"
 
-[[d1_databases]]
-binding = "DB"
-database_name = "geo-us-east"
-database_id = "fd1fe1b7-b556-4692-9f00-13f175e30d51"
+[[durable_objects]]
+binding = "MY_DURABLE_OBJECT"
+class_name = "GeminiProxy"
