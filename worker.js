@@ -63,7 +63,7 @@ export default {
 
 		if (url.pathname === "/hello") {
 			const result = await stub.sayHello();
-			return new Response(result, {
+			return new Response(JSON.stringify(result), {
 				status: result.status,
 			});
 		}
