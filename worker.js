@@ -23,16 +23,18 @@ export class GeminiProxy extends DurableObject {
 	async fetch(req) {
 		return fetch(req);
 	}
+
+	async sayHello() {
+		return {
+			status: 200,
+			body: "Hello from Durable Object!",
+		}
+	}
 }
 
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
-    if (url.pathname === "/") {
-      return new Response("Hello", {
-        status: 200,
-      });
-    }
 
     // 添加跨域支持
     let corsHeaders = {
@@ -48,6 +50,25 @@ export default {
       return new Response(null, { headers: corsHeaders });
     }
 
+		if (url.pathname === "/") {
+      return new Response("Hello", {
+        status: 200,
+      });
+    }
+
+		const id = env.MY_DURABLE_OBJECT.idFromName("gemini");
+
+		// https://developers.cloudflare.com/durable-objects/reference/data-location/
+		const stub = env.MY_DURABLE_OBJECT.get(id, { locationHint: "wnam" });
+
+		if (url.pathname === "/hello") {
+			const result = await stub.sayHello();
+			return new Response(result, {
+				status: result.status,
+			});
+		}
+
+
 		let targetURL = new URL("https://generativelanguage.googleapis.com");
 
     targetURL.pathname = url.pathname;
@@ -58,11 +79,6 @@ export default {
       headers: request.headers,
       body: request.body,
     });
-
-		const id = env.MY_DURABLE_OBJECT.idFromName("gemini");
-
-		// https://developers.cloudflare.com/durable-objects/reference/data-location/
-		const stub = env.MY_DURABLE_OBJECT.get(id, { locationHint: "wnam" });
 
 		let response = await stub.fetch(newRequest);
 
