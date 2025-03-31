@@ -10,6 +10,6 @@ main = "./worker.js"
 [placement]
 mode = "smart"
 
-[[durable_objects]]
-binding = "MY_DURABLE_OBJECT"
+[[durable_objects.bindings]]
+name = "MY_DURABLE_OBJECT"
 class_name = "GeminiProxy"
