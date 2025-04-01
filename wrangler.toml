@@ -5,7 +5,7 @@ main = "./worker.js"
 
 [[migrations]]
 tag = "v1"
-new_classes = [ "GeminiProxy" ]
+new_classes = ["GeminiProxy"]
 
 # Automatically place your workloads in an optimal location to minimize latency.
 # If you are running back-end logic in a Pages Function, running it closer to your back-end infrastructure
@@ -17,3 +17,7 @@ mode = "smart"
 [[durable_objects.bindings]]
 name = "MY_DURABLE_OBJECT"
 class_name = "GeminiProxy"
+
+# wrangler.toml (wrangler v3.88.0^)
+[observability.logs]
+enabled = false
