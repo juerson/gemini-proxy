@@ -4,7 +4,7 @@ import { DurableObject } from "cloudflare:workers";
  * Env provides a mechanism to reference bindings declared in wrangler.jsonc within JavaScript
  *
  * @typedef {Object} Env
- * @property {DurableObjectNamespace} MY_DURABLE_OBJECT - The Durable Object namespace binding
+ * @property {DurableObjectNamespace} GEMINI_DO - The Durable Object namespace binding
  */
 
 /** A Durable Object's behavior is defined in an exported Javascript class */
@@ -33,33 +33,33 @@ export class GeminiProxy extends DurableObject {
 }
 
 export default {
-  async fetch(request, env) {
-    const url = new URL(request.url);
+	async fetch(request, env) {
+		const url = new URL(request.url);
 
-    // 添加跨域支持
-    let corsHeaders = {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET,HEAD,POST,OPTIONS",
-      "Access-Control-Allow-Headers": request.headers.get(
-        "Access-Control-Request-Headers"
-      ),
-    };
+		// 添加跨域支持
+		let corsHeaders = {
+			"Access-Control-Allow-Origin": "*",
+			"Access-Control-Allow-Methods": "GET,HEAD,POST,OPTIONS",
+			"Access-Control-Allow-Headers": request.headers.get(
+				"Access-Control-Request-Headers"
+			),
+		};
 
-    // 如果是预检请求，直接返回跨域头
-    if (request.method === "OPTIONS") {
-      return new Response(null, { headers: corsHeaders });
-    }
+		// 如果是预检请求，直接返回跨域头
+		if (request.method === "OPTIONS") {
+			return new Response(null, { headers: corsHeaders });
+		}
 
 		if (url.pathname === "/") {
-      return new Response("Hello", {
-        status: 200,
-      });
-    }
+			return new Response("Hello", {
+				status: 200,
+			});
+		}
 
-		const id = env.MY_DURABLE_OBJECT.idFromName("gemini");
+		const id = env.GEMINI_DO.idFromName("gemini");
 
 		// https://developers.cloudflare.com/durable-objects/reference/data-location/
-		const stub = env.MY_DURABLE_OBJECT.get(id, { locationHint: "wnam" });
+		const stub = env.GEMINI_DO.get(id, { locationHint: "wnam" });
 
 		if (url.pathname === "/hello") {
 			const result = await stub.sayHello();
@@ -71,27 +71,27 @@ export default {
 
 		let targetURL = new URL("https://generativelanguage.googleapis.com");
 
-    targetURL.pathname = url.pathname;
-    targetURL.search = url.search;
+		targetURL.pathname = url.pathname;
+		targetURL.search = url.search;
 
 		let newRequest = new Request(targetURL, {
-      method: request.method,
-      headers: request.headers,
-      body: request.body,
-    });
+			method: request.method,
+			headers: request.headers,
+			body: request.body,
+		});
 
 		let response = await stub.fetch(newRequest);
 
-    // 复制响应以添加新的头
-    let responseHeaders = new Headers(response.headers);
-    for (let [key, value] of Object.entries(corsHeaders)) {
-      responseHeaders.set(key, value);
-    }
+		// 复制响应以添加新的头
+		let responseHeaders = new Headers(response.headers);
+		for (let [key, value] of Object.entries(corsHeaders)) {
+			responseHeaders.set(key, value);
+		}
 
-    return new Response(response.body, {
-      status: response.status,
-      statusText: response.statusText,
-      headers: responseHeaders,
-    });
-  },
+		return new Response(response.body, {
+			status: response.status,
+			statusText: response.statusText,
+			headers: responseHeaders,
+		});
+	},
 };
