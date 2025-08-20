@@ -13,6 +13,7 @@
 在**设置** -> **模型服务** -> **Gemini** -> 填写如下：
 
 **API密钥：**<这里添加你google api key> （https://aistudio.google.com/apikey）
+
 **API地址：**https://您绑定的域名，比如：https://mydomain.com （注意后面没有`/`和其它字符）
 
 
